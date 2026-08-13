@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitStudio - Área do Aluno</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar do Aluno -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <div class="brand">
+        <div class="brand-icon">💪</div>
+        <span>FitStudio</span>
+        <span class="brand-badge">Área do Aluno</span>
+      </div>
+
+      <div class="user-nav-info">
+        <div class="user-badge">
+          <div class="user-avatar" style="background: var(--blue);">S</div>
+          <span id="studentNameHeader">Aluno</span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="logout()" title="Sair da conta">
+          🚪 Sair
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo do Aluno -->
+  <main class="container mt-6 mb-6" style="flex: 1;">
+
+    <!-- Banner de Boas-Vindas -->
+    <div class="card mb-6" style="background: linear-gradient(135deg, #1A1F2C, #131722); border-left: 4px solid var(--primary);">
+      <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">
+        Bora treinar hoje! ⚡
+      </h1>
+      <p class="text-muted" style="font-size: 0.9rem;">
+        Selecione a sua divisão abaixo e marque os exercícios conforme realiza as séries.
+      </p>
+    </div>
+
+    <!-- Navegação de Treinos do Aluno (Treino A, B, C...) -->
+    <div id="studentSplitsContainer" class="tabs">
+      <!-- Populado dinamicamente via JS -->
+    </div>
+
+    <!-- Área Principal de Exercícios do Treino Ativo -->
+    <div id="studentWorkoutContent">
+      <!-- Renderizado via JS -->
+    </div>
+
+  </main>
+
+  <!-- MODAL: TEMPORIZADOR DE DESCANSO -->
+  <div id="modalTimer" class="modal-overlay">
+    <div class="modal text-center" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3>⏱️ Temporizador de Descanso</h3>
+        <button class="modal-close" onclick="closeTimerModal()">✕</button>
+      </div>
+
+      <div class="my-4">
+        <div id="timerDisplay" class="timer-display" style="font-size: 3.5rem; margin: 1rem 0;">
+          01:00
+        </div>
+
+        <div class="flex justify-between gap-2 mb-4" style="justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="startRestTimer(30)">30 Seg</button>
+          <button class="btn btn-secondary btn-sm" onclick="startRestTimer(45)">45 Seg</button>
+          <button class="btn btn-primary btn-sm" onclick="startRestTimer(60)">60 Seg</button>
+          <button class="btn btn-secondary btn-sm" onclick="startRestTimer(90)">90 Seg</button>
+          <button class="btn btn-secondary btn-sm" onclick="startRestTimer(120)">2 Min</button>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="btn btn-secondary btn-full" onclick="pauseTimer()">⏸️ Pausar</button>
+        <button class="btn btn-danger btn-full" onclick="closeTimerModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      initStudentPanel();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "FitStudio - Sistema de Treinos",
+  "description": "Plataforma de gestão e acompanhamento de treinos fitness para administradores e alunos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

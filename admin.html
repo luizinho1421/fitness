@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitStudio - Painel Administrativo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar Administrativa -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <div class="brand">
+        <div class="brand-icon">💪</div>
+        <span>FitStudio</span>
+        <span class="brand-badge">Painel Admin</span>
+      </div>
+
+      <div class="user-nav-info">
+        <div class="user-badge">
+          <div class="user-avatar">A</div>
+          <span id="adminNameDisplay">Administrador</span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="logout()" title="Sair do sistema">
+          🚪 Sair
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container mt-6 mb-6" style="flex: 1;">
+
+    <!-- Dashboard Cards / Stats -->
+    <div class="grid grid-cols-3 mb-6">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green">👥</div>
+        <div>
+          <div class="stat-value" id="statTotalStudents">0</div>
+          <div class="stat-label">Alunos Cadastrados</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-orange">📋</div>
+        <div>
+          <div class="stat-value" id="statTotalWorkouts">0</div>
+          <div class="stat-label">Divisões de Treino Criadas</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue">🏋️</div>
+        <div>
+          <div class="stat-value" id="statTotalExercises">0</div>
+          <div class="stat-label">Exercícios no Sistema</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegação de Abas do Admin -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tabAlunosCadastrados" onclick="switchAdminTab('tabAlunosCadastrados')">
+        👥 Alunos Cadastrados
+      </button>
+      <button class="tab-btn" data-tab="tabCadastrarAluno" onclick="switchAdminTab('tabCadastrarAluno')">
+        ➕ Cadastrar Novo Aluno
+      </button>
+      <button class="tab-btn" data-tab="tabMontarTreino" onclick="switchAdminTab('tabMontarTreino')">
+        🛠️ Montar / Editar Treinos
+      </button>
+    </div>
+
+    <!-- SEÇÃO 1: ALUNOS CADASTRADOS -->
+    <section id="tabAlunosCadastrados" class="admin-section">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Lista de Alunos</h2>
+            <p class="text-muted" style="font-size: 0.85rem;">Gerencie os alunos cadastrados e acesse a montagem rápida de treinos</p>
+          </div>
+          <div style="width: 100%; max-width: 300px;">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="🔍 Buscar aluno por nome ou login..." 
+              oninput="renderStudentsTable(this.value)"
+            />
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nome do Aluno</th>
+                <th>Usuário / Login</th>
+                <th>Status de Treinos</th>
+                <th>Senha</th>
+                <th class="text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <!-- Renderizado dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 2: CADASTRAR ALUNO -->
+    <section id="tabCadastrarAluno" class="admin-section hidden">
+      <div class="card" style="max-width: 680px; margin: 0 auto;">
+        <div class="card-header">
+          <h2 class="card-title">Cadastrar Novo Aluno</h2>
+        </div>
+
+        <form id="registerStudentForm" onsubmit="handleRegisterStudentSubmit(event)">
+          <div class="grid grid-cols-2">
+            <div class="form-group">
+              <label for="newStudentName" class="form-label">Nome Completo *</label>
+              <input type="text" id="newStudentName" class="form-control" placeholder="Ex: Carlos Eduardo" required />
+            </div>
+
+            <div class="form-group">
+              <label for="newStudentLogin" class="form-label">Usuário de Acesso (Login) *</label>
+              <input type="text" id="newStudentLogin" class="form-control" placeholder="Ex: carloseduardo" required />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2">
+            <div class="form-group">
+              <label for="newStudentPassword" class="form-label">Senha de Acesso *</label>
+              <input type="text" id="newStudentPassword" class="form-control" placeholder="Ex: 123456" required />
+            </div>
+
+            <!-- MÓDULO DE CÓPIA DE TREINO NO CADASTRO -->
+            <div class="form-group">
+              <label for="copyWorkoutFromStudentSelect" class="form-label">Copiar Treino de Outro Aluno (Opcional)</label>
+              <select id="copyWorkoutFromStudentSelect" class="form-control">
+                <option value="">-- Não copiar (Criar sem treinos) --</option>
+                <!-- Opções populadas dinamicamente -->
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg mt-4">
+            ✅ Salvar e Cadastrar Aluno
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 3: MONTAR / EDITAR TREINOS -->
+    <section id="tabMontarTreino" class="admin-section hidden">
+      <div class="card mb-6">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="selectStudentForWorkout" class="form-label" style="font-size: 1rem; color: #FFF;">
+            Selecione o Aluno para Montar o Treino:
+          </label>
+          <select id="selectStudentForWorkout" class="form-control" onchange="handleStudentSelectChange(event)">
+            <option value="">-- Selecione um Aluno --</option>
+            <!-- Populado via JS -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Área de Edição do Treino do Aluno Selecionado -->
+      <div id="workoutEditorArea" class="hidden">
+        <div class="card-header" style="padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+          <h2 id="selectedStudentTitle" style="color: var(--primary);">Montagem de Treino</h2>
+        </div>
+
+        <!-- Abas dos Treinos do Aluno (Treino A, Treino B, etc.) -->
+        <div id="splitsTabsContainer" class="tabs" style="border-bottom: none;">
+          <!-- Renderizado via JS -->
+        </div>
+
+        <!-- Conteúdo da Divisão Selecionada -->
+        <div id="splitContentContainer">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADICIONAR EXERCÍCIO MANUALMENTE -->
+  <div id="modalAddExercise" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Adicionar Novo Exercício</h3>
+        <button class="modal-close" onclick="closeAddExerciseModal()">✕</button>
+      </div>
+
+      <form id="formAddExercise" onsubmit="handleAddExerciseSubmit(event)">
+        <div class="form-group">
+          <label for="exName" class="form-label">Nome do Exercício *</label>
+          <input type="text" id="exName" class="form-control" placeholder="Ex: Supino Inclinado com Halteres" required />
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="form-group">
+            <label for="exCategory" class="form-label">Grupo Muscular</label>
+            <select id="exCategory" class="form-control">
+              <option value="Peito">Peito</option>
+              <option value="Costas">Costas</option>
+              <option value="Pernas">Pernas</option>
+              <option value="Ombros">Ombros</option>
+              <option value="Tríceps">Tríceps</option>
+              <option value="Bíceps">Bíceps</option>
+              <option value="Abdômen">Abdômen</option>
+              <option value="Cardio">Cardio</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="exSets" class="form-label">Séries (Quantidade)</label>
+            <input type="number" id="exSets" class="form-control" value="4" min="1" max="10" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="form-group">
+            <label for="exReps" class="form-label">Repetições</label>
+            <input type="text" id="exReps" class="form-control" placeholder="Ex: 10 a 12 ou Até a falha" value="10 a 12" />
+          </div>
+
+          <div class="form-group">
+            <label for="exLoad" class="form-label">Carga / Observações</label>
+            <input type="text" id="exLoad" class="form-control" placeholder="Ex: 20kg cada lado | Descanso 60s" />
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary btn-full">💾 Adicionar Exercício</button>
+          <button type="button" class="btn btn-secondary" onclick="closeAddExerciseModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CATÁLOGO / PRESETS DE EXERCÍCIOS -->
+  <div id="modalPresets" class="modal-overlay">
+    <div class="modal" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3>⚡ Biblioteca Rápida de Exercícios</h3>
+        <button class="modal-close" onclick="closeExercisePresetModal()">✕</button>
+      </div>
+
+      <p class="text-muted mb-4" style="font-size: 0.85rem;">
+        Clique no botão "➕ Add" para incluir instantaneamente o exercício no treino do aluno:
+      </p>
+
+      <div id="presetsListContainer" class="grid grid-cols-2" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <div class="mt-4 text-right">
+        <button class="btn btn-secondary" onclick="closeExercisePresetModal()">Fechar Biblioteca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: COPIAR TREINO PARA OUTRO ALUNO -->
+  <div id="modalCopyWorkout" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="copyModalTitle">Copiar Treinos de Aluno</h3>
+        <button class="modal-close" onclick="closeCopyWorkoutModal()">✕</button>
+      </div>
+
+      <form id="formCopyWorkout" onsubmit="handleCopyWorkoutSubmit(event)">
+        <div class="form-group mb-4">
+          <label for="targetStudentForCopy" class="form-label">Selecione o Aluno de Destino:</label>
+          <select id="targetStudentForCopy" class="form-control" required>
+            <!-- Populado via JS -->
+          </select>
+          <p class="text-muted mt-2" style="font-size: 0.75rem;">
+            ⚠️ Atenção: Todos os treinos existentes do aluno de destino serão substituídos pelos treinos do aluno de origem.
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-orange btn-full">📋 Confirmar e Copiar Treinos</button>
+          <button type="button" class="btn btn-secondary" onclick="closeCopyWorkoutModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      initAdminPanel();
+    });
+  </script>
+</body>
+</html>

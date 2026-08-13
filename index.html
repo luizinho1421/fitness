@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitStudio - Login do Sistema</title>
+  <meta name="description" content="Plataforma de gestão e acompanhamento de treinos de alta performance." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-body">
+
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-brand-icon">💪</div>
+      <h1 class="login-title">FitStudio</h1>
+      <p class="login-subtitle">Acesse sua conta para visualizar ou gerenciar treinos</p>
+    </div>
+
+    <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+      <div class="form-group">
+        <label for="loginUsername" class="form-label">Usuário / Login</label>
+        <input 
+          type="text" 
+          id="loginUsername" 
+          class="form-control" 
+          placeholder="Digite seu usuário" 
+          required 
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword" class="form-label">Senha</label>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          class="form-control" 
+          placeholder="Digite sua senha" 
+          required 
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full btn-lg mt-4">
+        ⚡ Entrar no Sistema
+      </button>
+    </form>
+
+    <div class="text-center mt-6 text-muted" style="font-size: 0.8rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+      <p>FitStudio © 2026 • Todos os direitos reservados</p>
+      <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.7;">Sistema seguro para instrutores e alunos</p>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    // Executa verificação inicial de autenticação
+    window.addEventListener('DOMContentLoaded', () => {
+      checkPageAuth();
+    });
+  </script>
+</body>
+</html>
